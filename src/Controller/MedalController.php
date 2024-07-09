@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Medal;
 use App\Form\MedalFormType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -11,13 +12,19 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class MedalController extends AbstractController
 {
-    #[Route('/medal', name: 'app_medal')]
+    #[Route('/medal/new', name: 'app_medal_new')]
+    #[Route('/medal/edit/{medal}', name: 'app_medal_edit')]
     public function index(
         Request $request,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        ?Medal $medal = null
     ): Response
     {
-        $form = $this->createForm(MedalFormType::class);
+        if (!$medal) {
+            $medal = new Medal();
+        }
+
+        $form = $this->createForm(MedalFormType::class, $medal);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
