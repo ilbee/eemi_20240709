@@ -7,6 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: MedalRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Medal
 {
     #[ORM\Id]
@@ -15,6 +16,7 @@ class Medal
     private ?int $id = null;
 
     #[ORM\Column(length: 100)]
+    #[Assert\Choice(['or', 'argent', 'bronze'])]
     private ?string $color = null;
 
     #[ORM\Column(length: 100)]
@@ -35,6 +37,28 @@ class Medal
     #[ORM\ManyToOne(inversedBy: 'medals')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Nation $nation = null;
+
+    private function setPointForColor(): void
+    {
+        $this->setPoint(1);
+
+        if ($this->color == 'or') {
+            $this->setPoint(3);
+        } elseif ($this->color == 'argent') {
+            $this->setPoint(2);
+        }
+    }
+    #[ORM\PrePersist]
+    public function prePersist(): void
+    {
+        $this->setPointForColor();
+    }
+
+    #[ORM\PreUpdate]
+    public function preUpdate(): void
+    {
+        $this->setPointForColor();
+    }
 
     public function getId(): ?int
     {

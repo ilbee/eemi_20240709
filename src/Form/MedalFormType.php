@@ -17,7 +17,6 @@ class MedalFormType extends AbstractType
         $builder
             ->add('color')
             ->add('category')
-            ->add('point')
             ->add('sport', EntityType::class, [
                 'class' => Sport::class,
                 'choice_label' => 'fullName',
