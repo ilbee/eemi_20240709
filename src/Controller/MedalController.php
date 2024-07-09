@@ -21,8 +21,12 @@ class MedalController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($form->getData());
+            $medal = $form->getData();
+
+            $entityManager->persist($medal);
             $entityManager->flush();
+
+            $this->addFlash('success', 'Medal created!');
         }
 
         return $this->render('medal/index.html.twig', [

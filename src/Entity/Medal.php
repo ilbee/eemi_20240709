@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\MedalRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: MedalRepository::class)]
 class Medal
@@ -20,6 +21,11 @@ class Medal
     private ?string $category = null;
 
     #[ORM\Column]
+    #[Assert\Range(
+        notInRangeMessage: 'Medal point must be between 1 and 3.',
+        min: 1,
+        max: 3
+    )]
     private ?int $point = null;
 
     #[ORM\ManyToOne(inversedBy: 'medals')]
